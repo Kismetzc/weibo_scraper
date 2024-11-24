@@ -6,7 +6,7 @@ from utils import combined_csv
 import pandas as pd
 import os
 
-def generate_combined_wordcloud( stopwords_dir, custom_stopwords, font_path, logger=None, frequency_threshold=5, top_n=50):
+def generate_combined_wordcloud( stopwords_dir, custom_stopwords, font_path, logger=None, frequency_threshold=1, top_n=300):
     combined_files = [
         ("./data/cleaned/comments_ml_cleaned.csv", "./data/cleaned/comments_lhl_cleaned.csv",
          "./data/combined/comments_mllhl.csv"),
@@ -20,7 +20,7 @@ def generate_combined_wordcloud( stopwords_dir, custom_stopwords, font_path, log
         combined_csv(input1, input2, output)
         generate_wordcloud(
             input_csv=output,
-            output_image=f"./data/wordclouds_test3/{os.path.basename(output).replace('.csv', '.png')}",
+            output_image=f"./data/wordclouds_test/{os.path.basename(output).replace('.csv', '.png')}",
             stopwords_dir=stopwords_dir,
             custom_stopwords=custom_stopwords,
             font_path=font_path,
@@ -45,7 +45,7 @@ def main():
     data_dir = 'data'
     raw_dir = f"{data_dir}/raw"
     cleaned_dir = f"{data_dir}/cleaned"
-    wordclouds_dir = f"{data_dir}/wordclouds_test3"
+    wordclouds_dir = f"{data_dir}/wordclouds_test"
     stopwords_dir = 'stopwords'  # 停用词目录路径
     font_path = 'fonts/SimHei.ttf'  # 中文字体文件路径
 
@@ -79,24 +79,24 @@ def main():
     # scraper.close_driver()
 
     # 定义过滤关键词
-    condition_keywords = ['中国', 'CN', '祖国', '国家', '统一', '台湾', '只有一个', '针', '老师', '武艺', '期待', '国安', '新剧']
+    # condition_keywords = ['中国', 'CN', '祖国', '国家', '统一', '台湾', '只有一个', '针', '老师', '武艺', '期待', '国安', '新剧']
 
     # 数据清洗
-    for name, urls in weibo_urls.items():
-        for idx, url in enumerate(urls, start=1):
-            raw_csv = f"{raw_dir}/comments_{name}_raw.csv"
-            cleaned_csv = f"{cleaned_dir}/comments_{name}_cleaned.csv"
-            print(f"开始清洗 {name} 的数据: {raw_csv}")
-            clean_comments(
-                input_file=raw_csv,
-                output_file=cleaned_csv,
-                condition_keywords=condition_keywords
-            )
+    # for name, urls in weibo_urls.items():
+    #     for idx, url in enumerate(urls, start=1):
+    #         raw_csv = f"{raw_dir}/comments_{name}_raw.csv"
+    #         cleaned_csv = f"{cleaned_dir}/comments_{name}_cleaned.csv"
+    #         print(f"开始清洗 {name} 的数据: {raw_csv}")
+    #         clean_comments(
+    #             input_file=raw_csv,
+    #             output_file=cleaned_csv,
+    #             condition_keywords=condition_keywords
+    #         )
 
 
     # 生成词云
     custom_stopwords = ["微博", "视频", "图片", "评论"]
-    frequency_threshold = 3  # 设置词频阈值，例如只保留出现次数 >= 5 的词语
+    frequency_threshold = 2  # 设置词频阈值，例如只保留出现次数 >= 5 的词语
     top_n = 100  # 仅保留前100个高频词语
 
     for name in weibo_urls.keys():

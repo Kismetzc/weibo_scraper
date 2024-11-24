@@ -74,22 +74,25 @@ def process_text(text_series, stopwords, logger=None, frequency_threshold=1, top
     return word_counter
 
 
-def generate_wordcloud_from_frequencies(frequencies, font_path, output_image, logger=None):
+def generate_wordcloud_from_frequencies(frequencies, font_path, output_image, max_words=100, logger=None):
     if logger is None:
         logger = setup_logger()
 
-    sorted_frequencies = dict(sorted(frequencies.items(), key=lambda item: item[1], reverse=True))
+    # sorted_frequencies = dict(sorted(frequencies.items(), key=lambda item: item[1], reverse=True))
 
     wc = WordCloud(
         font_path=font_path,
         width=800,
         height=600,
         background_color='white',
-        max_words=100,  # 降低最大词数
-        max_font_size=100,
+        max_words=max_words,
+        # min_font_size=30,
+        # max_font_size=120,
         random_state=42,
-        collocations=False
-    ).generate_from_frequencies(sorted_frequencies)
+        # collocations=False,
+        prefer_horizontal=0.8,
+        relative_scaling=0.5
+    ).generate_from_frequencies(frequencies)
 
     # 显示词云
     plt.figure(figsize=(10, 8), facecolor='white')
@@ -126,4 +129,4 @@ def generate_wordcloud(input_csv, output_image, stopwords_dir, custom_stopwords,
     word_counter = process_text(df['text_raw'], stopwords, logger, frequency_threshold, top_n)
 
     # 生成词云
-    generate_wordcloud_from_frequencies(word_counter, font_path, output_image, logger)
+    generate_wordcloud_from_frequencies(word_counter, font_path, output_image, max_words=top_n, logger=logger)
